@@ -1,2 +1,3 @@
 ---
-# vars file for popcorntime
+phpstorm_dir: "{{ popcorntime_install_dir }}/popcorntime-{{ popcorntime_version }}"
+phpstorm_archive: "{{ popcorntime_dir }}.tar.gz"

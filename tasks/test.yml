@@ -1,0 +1,11 @@
+---
+
+- name: Get stat of phpcorntime
+  stat:
+    path="{{ phpcorntime_bin }}"
+  register: phpcorntime_stat
+
+- name: Test if phpcorntime is executable
+  fail:
+    msg="{{ phpcorntime_bin }} isn't executable"
+  when: phpcorntime_stat.stat.xgrp != true

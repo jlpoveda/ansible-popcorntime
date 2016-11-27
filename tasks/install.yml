@@ -1,0 +1,53 @@
+---
+
+- name: Test if folder exist
+  stat:
+    path={{ popcorntime_dir }}
+  register: popcorntime_exist
+
+- name: Download Popcorn-Time archive
+  become: yes
+  get_url:
+    url=https://get.popcorntime.sh/build/Popcorn-Time-{{ popcorntime_version }}-Linux-64.tar.xz
+    dest={{ popcorntime_archive }}
+  #when: popcorntime_exist.stat.exists == False
+
+- name: Decompress popcorntime archive
+  become: yes
+  unarchive:
+    src={{ popcorntime_archive }}
+    dest={{ popcorntime_install_dir }}
+    copy=no
+  #when: popcorntime_exist.stat.exists == False
+
+- name: Move popcorntime folder
+  become: yes
+  shell:
+    mv {{ popcorntime_install_dir }}/popcorntime-* {{ popcorntime_dir }}
+    creates="{{ popcorntime_dir }}"
+
+- name: Create symlink
+  become: yes
+  file:
+    src={{ popcorntime_dir }}/Popcorn-Time
+    dest={{ popcorntime_bin }}
+    state=link
+    owner=root
+    group=root
+    mode=755
+    force=yes
+
+- name: Create link desktop
+  become: yes
+  template:
+    src=popcorntime.desktop.j2
+    dest=/usr/share/applications/popcorntime.desktop
+    owner=root
+    group=root
+    mode=0644
+
+- name: Remove popcorntime archive
+  become: yes
+  file:
+    path={{ popcorntime_archive }}
+    state=absent

@@ -1,2 +1,3 @@
 ---
-# tasks file for popcorntime
+- include: install.yml
+- include: test.yml
